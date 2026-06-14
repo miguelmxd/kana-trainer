@@ -12,508 +12,235 @@
 <meta name="apple-mobile-web-app-title" content="Kana Trainer">
 <link rel="manifest" href="manifest.json">
 <style>
-  :root {
-    --bg: #0d0d0f;
-    --bg2: #141418;
-    --bg3: #1c1c22;
-    --surface: #222228;
-    --surface2: #2a2a32;
-    --border: #333340;
-    --text: #e8e4d9;
-    --muted: #7a7690;
-    --accent: #c0392b;
-    --accent2: #e74c3c;
-    --gold: #c9a84c;
-    --green: #27ae60;
-    --red: #e74c3c;
-    --blue: #3a86c8;
-    --font-kana: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-    --font-ui: 'Inter', 'Segoe UI', system-ui, sans-serif;
-    --radius: 8px;
-    --radius-lg: 14px;
-  }
+:root {
+  --bg:#0d0d0f; --bg2:#141418; --bg3:#1c1c22;
+  --surface:#222228; --surface2:#2a2a32; --border:#333340;
+  --text:#e8e4d9; --muted:#7a7690;
+  --accent:#c0392b; --accent2:#e74c3c;
+  --gold:#c9a84c; --green:#27ae60; --red:#e74c3c; --blue:#3a86c8;
+  --font-kana:'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho',serif;
+  --font-ui:'Inter','Segoe UI',system-ui,sans-serif;
+  --radius:8px; --radius-lg:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ui);min-height:100vh;display:flex;flex-direction:column}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* HEADER */
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.logo{font-size:15px;font-weight:700;letter-spacing:.04em}
+.logo span{color:var(--accent2)}
+.streak-badge{display:flex;align-items:center;gap:5px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--gold);font-weight:600}
+.header-right{display:flex;align-items:center;gap:10px}
+.hstat{font-size:11px;color:var(--muted);text-align:center}
+.hstat strong{color:var(--text);font-size:12px;display:block}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-ui);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+/* NAV TABS */
+.nav-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border)}
+.nav-tab{flex:1;padding:10px;font-size:12px;font-family:var(--font-ui);background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .15s;font-weight:500}
+.nav-tab.active{border-bottom-color:var(--accent);color:var(--text)}
 
-  /* ── TOP BAR ── */
-  header {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
+/* APP */
+.app{flex:1;display:flex;flex-direction:column;max-width:680px;width:100%;margin:0 auto;padding:16px;gap:14px}
+.screen{display:none;flex-direction:column;gap:14px}
+.screen.visible{display:flex}
 
-  .logo {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--text);
-  }
-  .logo span { color: var(--accent2); }
+/* MODE BAR */
+.mode-bar{display:flex;gap:6px;flex-wrap:wrap}
+.mode-btn{flex:1;min-width:90px;padding:9px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-family:var(--font-ui);font-size:12px;cursor:pointer;transition:all .15s;text-align:center}
+.mode-btn:hover{border-color:var(--accent);color:var(--text)}
+.mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
 
-  .header-stats {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .hstat {
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .hstat strong {
-    color: var(--text);
-    font-size: 13px;
-    display: block;
-  }
+/* SUB-MODE */
+.submode-bar{display:flex;gap:6px;flex-wrap:wrap}
+.sub-btn{padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-family:var(--font-ui);font-size:11px;cursor:pointer;transition:all .15s}
+.sub-btn.active{background:var(--surface2);border-color:var(--gold);color:var(--gold)}
 
-  /* ── MAIN LAYOUT ── */
-  .app {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    max-width: 680px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 24px 16px;
-    gap: 20px;
-  }
+/* PROGRESS */
+.progress-wrap{display:flex;flex-direction:column;gap:5px}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.progress-track{height:5px;background:var(--surface);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;transition:width .4s ease;width:0%}
 
-  /* ── MODE SELECTOR ── */
-  .mode-bar {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(75px,1fr));gap:7px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;text-align:center}
+.stat-card .num{font-size:20px;font-weight:700;color:var(--text);line-height:1.1}
+.stat-card .lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.stat-card.good .num{color:var(--green)}
+.stat-card.bad .num{color:var(--red)}
+.stat-card.accent .num{color:var(--gold)}
+.stat-card.blue .num{color:var(--blue)}
 
-  .mode-btn {
-    flex: 1;
-    min-width: 100px;
-    padding: 10px 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--muted);
-    font-family: var(--font-ui);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
-  }
-  .mode-btn:hover { border-color: var(--accent); color: var(--text); }
-  .mode-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    font-weight: 600;
-  }
+/* KANA CARD */
+.kana-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative}
+.kana-type-badge{position:absolute;top:12px;left:12px;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;letter-spacing:.05em}
+.badge-hira{background:#1a2e40;color:#5ba3d4}
+.badge-kata{background:#2a1a2e;color:#c48fd4}
+.mastery-pips{position:absolute;top:12px;right:12px;display:flex;gap:3px}
+.pip{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.pip.filled{background:var(--gold)}
+.pip.neg{background:var(--accent)}
 
-  /* ── SUB-MODE ── */
-  .submode-bar {
-    display: flex;
-    gap: 6px;
-  }
-  .sub-btn {
-    padding: 6px 14px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--muted);
-    font-family: var(--font-ui);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .sub-btn.active {
-    background: var(--surface2);
-    border-color: var(--gold);
-    color: var(--gold);
-  }
+/* TIMER RING */
+.timer-wrap{position:absolute;bottom:12px;right:14px;display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.timer-val{font-variant-numeric:tabular-nums;min-width:28px;text-align:right}
 
-  /* ── PROGRESS BAR ── */
-  .progress-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .progress-track {
-    height: 6px;
-    background: var(--surface);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 100%);
-    border-radius: 3px;
-    transition: width 0.4s ease;
-    width: 0%;
-  }
+.kana-display{font-family:var(--font-kana);font-size:clamp(68px,17vw,116px);line-height:1;color:var(--text);user-select:none;min-height:120px;display:flex;align-items:center;justify-content:center;width:100%;transition:transform .1s}
+.kana-display.pop{transform:scale(1.06)}
+.mastery-label{font-size:11px;color:var(--muted)}
 
-  /* ── STATS ROW ── */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-    gap: 8px;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 10px 12px;
-    text-align: center;
-  }
-  .stat-card .num {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.1;
-  }
-  .stat-card .lbl {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-  .stat-card.good .num { color: var(--green); }
-  .stat-card.bad .num { color: var(--red); }
-  .stat-card.accent .num { color: var(--gold); }
+/* INPUT */
+.input-area{display:flex;flex-direction:column;gap:9px}
+.input-row{display:flex;gap:7px}
+.romaji-input{flex:1;padding:13px 14px;background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-ui);font-size:17px;font-weight:500;outline:none;transition:border-color .15s;letter-spacing:.04em}
+.romaji-input:focus{border-color:var(--accent)}
+.romaji-input.correct{border-color:var(--green)}
+.romaji-input.incorrect{border-color:var(--red)}
+.check-btn{padding:13px 18px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap}
+.check-btn:hover{background:var(--accent2)}
+.check-btn:disabled{opacity:.4;cursor:default}
+.feedback{font-size:13px;padding:9px 12px;border-radius:var(--radius);font-weight:500;min-height:38px;display:flex;align-items:center;gap:7px;transition:all .2s}
+.feedback.correct{background:rgba(39,174,96,.12);color:#4ade80;border:1px solid rgba(39,174,96,.3)}
+.feedback.incorrect{background:rgba(231,76,60,.12);color:#f87171;border:1px solid rgba(231,76,60,.3)}
+.feedback.empty{background:transparent;border:1px solid transparent}
+.next-btn{padding:12px 18px;background:var(--surface2);border:1px solid var(--gold);border-radius:var(--radius);color:var(--gold);font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;width:100%;margin-top:2px}
+.next-btn:hover{background:rgba(201,168,76,.12)}
 
-  /* ── KANA CARD ── */
-  .kana-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 32px 24px 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-  }
-  .kana-type-badge {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-  .badge-hira { background: #1a2e40; color: #5ba3d4; }
-  .badge-kata { background: #2a1a2e; color: #c48fd4; }
+/* CHOICES */
+.choices-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.choice-btn{padding:18px 10px;background:var(--surface);border:2px solid var(--border);border-radius:var(--radius-lg);color:var(--text);font-family:var(--font-kana);font-size:34px;cursor:pointer;transition:all .15s;text-align:center}
+.choice-btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.choice-btn.correct{border-color:var(--green);background:rgba(39,174,96,.1)}
+.choice-btn.incorrect{border-color:var(--red);background:rgba(231,76,60,.1)}
+.choice-btn:disabled{cursor:default;transform:none}
 
-  .mastery-pips {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    display: flex;
-    gap: 4px;
-  }
-  .pip {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border);
-  }
-  .pip.filled { background: var(--gold); }
-  .pip.neg { background: var(--accent); }
+/* KANA KEYBOARD */
+.kana-keyboard{display:grid;gap:5px}
+.kb-row{display:flex;gap:5px;justify-content:center}
+.kb-key{min-width:44px;padding:8px 4px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-kana);font-size:18px;cursor:pointer;transition:all .12s;text-align:center;flex:1;max-width:60px}
+.kb-key:active{background:var(--surface2);transform:scale(.94)}
+.kb-key.selected{border-color:var(--gold);background:rgba(201,168,76,.15);color:var(--gold)}
+.kb-key.disabled-key{opacity:.25;pointer-events:none}
+.kb-confirm{width:100%;padding:11px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
+.kb-confirm:disabled{opacity:.4;cursor:default}
+.kb-selected-display{text-align:center;font-family:var(--font-kana);font-size:28px;color:var(--gold);min-height:36px;padding:4px}
 
-  .kana-display {
-    font-family: var(--font-kana);
-    font-size: clamp(72px, 18vw, 120px);
-    line-height: 1;
-    color: var(--text);
-    text-shadow: 0 0 40px rgba(192, 57, 43, 0.15);
-    user-select: none;
-    min-height: 130px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
+/* MUERTE SÚBITA */
+.lives-row{display:flex;align-items:center;gap:8px}
+.life-icon{font-size:20px;transition:transform .2s}
+.life-icon.lost{filter:grayscale(1);opacity:.3;transform:scale(.8)}
+.gauntlet-timer{flex:1;text-align:right;font-size:13px;color:var(--muted)}
+.gauntlet-timer span{color:var(--text);font-weight:700;font-size:15px}
 
-  .mastery-label {
-    font-size: 12px;
-    color: var(--muted);
-  }
+/* ACTION ROW */
+.action-row{display:flex;gap:7px;flex-wrap:wrap}
+.action-btn{flex:1;min-width:110px;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-family:var(--font-ui);font-size:12px;cursor:pointer;transition:all .15s}
+.action-btn:hover{border-color:var(--muted);color:var(--text)}
 
-  /* ── INPUT AREA ── */
-  .input-area {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+/* COMPLETE */
+.complete-screen-inner{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:16px;align-items:center}
+.complete-icon{font-size:52px}
+.complete-title{font-size:20px;font-weight:700}
+.complete-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.complete-stat{background:var(--surface);border-radius:var(--radius);padding:12px 8px;font-size:12px;color:var(--muted)}
+.complete-stat .val{font-size:22px;font-weight:700;color:var(--text);display:block;margin-bottom:3px}
+.record-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 9px;border-radius:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold)}
+.error-table{width:100%;border-collapse:collapse;font-size:12px}
+.error-table th{color:var(--muted);padding:5px 8px;font-weight:500;border-bottom:1px solid var(--border)}
+.error-table td{padding:5px 8px;border-bottom:1px solid var(--bg3)}
+.error-table .kana-cell{font-family:var(--font-kana);font-size:20px;width:40px}
+.error-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.error-bar-fill{height:100%;background:var(--accent2);border-radius:2px}
 
-  .input-row {
-    display: flex;
-    gap: 8px;
-  }
+/* STATS SCREEN */
+.chart-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px}
+.chart-title{font-size:12px;color:var(--muted);margin-bottom:12px}
+.chart-bars{display:flex;align-items:flex-end;gap:4px;height:100px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar{width:100%;background:var(--accent);border-radius:3px 3px 0 0;transition:height .4s ease;min-height:2px}
+.chart-bar-lbl{font-size:9px;color:var(--muted);text-align:center}
+.chart-bar-val{font-size:9px;color:var(--muted)}
+.kana-grid-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px}
+.kana-grid-title{font-size:12px;color:var(--muted);margin-bottom:10px}
+.kana-grid{display:flex;flex-wrap:wrap;gap:5px}
+.kana-chip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 7px;min-width:40px}
+.kana-chip .kc-kana{font-family:var(--font-kana);font-size:18px;line-height:1}
+.kana-chip .kc-err{font-size:9px;color:var(--accent2);margin-top:2px}
+.kana-chip.kc-clean{border-color:rgba(39,174,96,.3)}
+.stats-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.summary-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;text-align:center}
+.summary-card .sv{font-size:28px;font-weight:700;color:var(--text)}
+.summary-card .sl{font-size:11px;color:var(--muted);margin-top:3px}
 
-  .romaji-input {
-    flex: 1;
-    padding: 14px 16px;
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: var(--font-ui);
-    font-size: 18px;
-    font-weight: 500;
-    outline: none;
-    transition: border-color 0.15s;
-    letter-spacing: 0.05em;
-  }
-  .romaji-input:focus { border-color: var(--accent); }
-  .romaji-input.correct { border-color: var(--green); }
-  .romaji-input.incorrect { border-color: var(--red); }
+/* MUERTE SÚBITA SCREEN */
+.ms-status{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.ms-timer{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--gold)}
+.ms-timer.danger{color:var(--red);animation:pulse .5s infinite alternate}
+@keyframes pulse{from{opacity:1}to{opacity:.5}}
+.ms-score{font-size:13px;color:var(--muted)}
+.ms-score span{color:var(--text);font-weight:700;font-size:16px}
 
-  .check-btn {
-    padding: 14px 20px;
-    background: var(--accent);
-    border: none;
-    border-radius: var(--radius);
-    color: #fff;
-    font-family: var(--font-ui);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
-    white-space: nowrap;
-  }
-  .check-btn:hover { background: var(--accent2); }
-  .check-btn:disabled { opacity: 0.4; cursor: default; }
+/* GAME OVER */
+.gameover-screen{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.gameover-icon{font-size:52px}
 
-  .feedback {
-    font-size: 14px;
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    font-weight: 500;
-    min-height: 40px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s;
-  }
-  .feedback.correct { background: rgba(39,174,96,0.12); color: #4ade80; border: 1px solid rgba(39,174,96,0.3); }
-  .feedback.incorrect { background: rgba(231,76,60,0.12); color: #f87171; border: 1px solid rgba(231,76,60,0.3); }
-  .feedback.empty { background: transparent; border: 1px solid transparent; }
-
-  /* ── MULTIPLE CHOICE (inverse mode) ── */
-  .choices-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .choice-btn {
-    padding: 20px 12px;
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: var(--radius-lg);
-    color: var(--text);
-    font-family: var(--font-kana);
-    font-size: 36px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
-  }
-  .choice-btn:hover { border-color: var(--accent); transform: translateY(-1px); }
-  .choice-btn.correct { border-color: var(--green); background: rgba(39,174,96,0.1); }
-  .choice-btn.incorrect { border-color: var(--red); background: rgba(231,76,60,0.1); }
-  .choice-btn:disabled { cursor: default; transform: none; }
-
-  /* ── ACTION ROW ── */
-  .action-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .action-btn {
-    flex: 1;
-    min-width: 120px;
-    padding: 10px 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--muted);
-    font-family: var(--font-ui);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .action-btn:hover { border-color: var(--muted); color: var(--text); }
-
-  /* ── SESSION COMPLETE ── */
-  .complete-screen {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 32px 24px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-  }
-  .complete-icon { font-size: 56px; }
-  .complete-title { font-size: 22px; font-weight: 700; }
-  .complete-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    width: 100%;
-  }
-  .complete-stat {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 14px 10px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .complete-stat .val {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text);
-    display: block;
-    margin-bottom: 4px;
-  }
-  .error-table {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  .error-table th {
-    color: var(--muted);
-    padding: 6px 10px;
-    font-weight: 500;
-    border-bottom: 1px solid var(--border);
-  }
-  .error-table td {
-    padding: 6px 10px;
-    border-bottom: 1px solid var(--bg3);
-  }
-  .error-table .kana-cell {
-    font-family: var(--font-kana);
-    font-size: 22px;
-    width: 48px;
-  }
-  .error-bar {
-    height: 4px;
-    background: var(--surface2);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .error-bar-fill {
-    height: 100%;
-    background: var(--accent2);
-    border-radius: 2px;
-  }
-
-  /* ── RECORDS BADGE ── */
-  .record-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 12px;
-    background: rgba(201,168,76,0.1);
-    border: 1px solid rgba(201,168,76,0.3);
-    color: var(--gold);
-  }
-
-  /* ── HIDDEN ── */
-  .hidden { display: none !important; }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 480px) {
-    .kana-display { font-size: 80px; min-height: 100px; }
-    .complete-stats { grid-template-columns: 1fr 1fr; }
-  }
-
-  /* ── NEXT BTN state after feedback ── */
-  .next-btn {
-    padding: 14px 20px;
-    background: var(--surface2);
-    border: 1px solid var(--gold);
-    border-radius: var(--radius);
-    color: var(--gold);
-    font-family: var(--font-ui);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
-    width: 100%;
-    margin-top: 4px;
-  }
-  .next-btn:hover { background: rgba(201,168,76,0.12); }
+.hidden{display:none!important}
+@media(max-width:480px){.kana-display{font-size:76px;min-height:100px}.complete-stats{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">仮名 <span>Trainer</span></div>
-  <div class="header-stats">
-    <div class="hstat"><strong id="hSessions">0</strong>Sesiones</div>
-    <div class="hstat"><strong id="hBestAcc">—</strong>Mejor precisión</div>
-    <div class="hstat"><strong id="hMostFailed">—</strong>Más fallado</div>
+  <div class="logo">仮名 <span>Trainer</span> <span style="font-size:10px;color:var(--muted);font-weight:400">Pro</span></div>
+  <div class="header-right">
+    <div class="streak-badge" id="streakBadge">🔥 <span id="streakNum">0</span></div>
+    <div class="hstat"><strong id="hBestAcc">—</strong>récord</div>
+    <div class="hstat"><strong id="hSessions">0</strong>sesiones</div>
   </div>
 </header>
 
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showScreen('practice')">Práctica</button>
+  <button class="nav-tab" onclick="showScreen('muerte')">Muerte súbita</button>
+  <button class="nav-tab" onclick="showScreen('stats')">Estadísticas</button>
+</div>
+
 <div class="app">
 
-  <!-- MODE SELECTOR -->
-  <div class="mode-bar">
-    <button class="mode-btn active" onclick="setMode('hiragana')">ひ Hiragana</button>
-    <button class="mode-btn" onclick="setMode('katakana')">カ Katakana</button>
-    <button class="mode-btn" onclick="setMode('mixed')">混 Mixto</button>
-  </div>
+  <!-- ══════════════════════════════════════
+       PANTALLA: PRÁCTICA
+  ══════════════════════════════════════ -->
+  <div class="screen visible" id="screen-practice">
 
-  <!-- SUB-MODE -->
-  <div class="submode-bar">
-    <button class="sub-btn active" id="smNormal" onclick="setSubMode('kana2romaji')">Kana → Romaji</button>
-    <button class="sub-btn" id="smInverse" onclick="setSubMode('romaji2kana')">Romaji → Kana</button>
-    <button class="sub-btn" id="smGauntlet" onclick="setSubMode('gauntlet')">⚔ Gauntlet</button>
-  </div>
-
-  <!-- PROGRESS -->
-  <div class="progress-wrap">
-    <div class="progress-label">
-      <span>Progreso</span>
-      <span id="progLabel">0 / 0 dominados</span>
+    <div class="mode-bar">
+      <button class="mode-btn active" onclick="setMode('hiragana')">ひ Hiragana</button>
+      <button class="mode-btn" onclick="setMode('katakana')">カ Katakana</button>
+      <button class="mode-btn" onclick="setMode('mixed')">混 Mixto</button>
     </div>
-    <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
-  </div>
 
-  <!-- STATS ROW -->
-  <div class="stats-row">
-    <div class="stat-card good"><div class="num" id="sAciertos">0</div><div class="lbl">Aciertos</div></div>
-    <div class="stat-card bad"><div class="num" id="sErrores">0</div><div class="lbl">Errores</div></div>
-    <div class="stat-card accent"><div class="num" id="sPrecision">—</div><div class="lbl">Precisión</div></div>
-    <div class="stat-card"><div class="num" id="sRestantes">0</div><div class="lbl">Restantes</div></div>
-  </div>
+    <div class="submode-bar">
+      <button class="sub-btn active" id="smNormal"   onclick="setSubMode('kana2romaji')">Kana → Romaji</button>
+      <button class="sub-btn"        id="smInverse"  onclick="setSubMode('romaji2kana')">Romaji → Kana</button>
+      <button class="sub-btn"        id="smKeyboard" onclick="setSubMode('keyboard')">⌨ Teclado kana</button>
+      <button class="sub-btn"        id="smGauntlet" onclick="setSubMode('gauntlet')">⚔ Gauntlet</button>
+    </div>
 
-  <!-- PRACTICE AREA -->
-  <div id="practiceArea">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progreso de sesión</span>
+        <span id="progLabel">0 / 0 dominados</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card good"><div class="num" id="sAciertos">0</div><div class="lbl">Aciertos</div></div>
+      <div class="stat-card bad"><div class="num" id="sErrores">0</div><div class="lbl">Errores</div></div>
+      <div class="stat-card accent"><div class="num" id="sPrecision">—</div><div class="lbl">Precisión</div></div>
+      <div class="stat-card blue"><div class="num" id="sVelocidad">—</div><div class="lbl">Vel. media</div></div>
+      <div class="stat-card"><div class="num" id="sRestantes">0</div><div class="lbl">Restantes</div></div>
+    </div>
 
     <!-- KANA CARD -->
     <div class="kana-card" id="kanaCard">
@@ -521,6 +248,10 @@
       <div class="mastery-pips" id="masteryPips"></div>
       <div class="kana-display" id="kanaDisplay">—</div>
       <div class="mastery-label" id="masteryLabel">Dominio: 0 / 2</div>
+      <div class="timer-wrap">
+        <span style="font-size:10px">⏱</span>
+        <span class="timer-val" id="timerVal">—</span>
+      </div>
     </div>
 
     <!-- NORMAL INPUT -->
@@ -535,44 +266,163 @@
       <button class="next-btn hidden" id="nextBtn" onclick="nextKana()">Siguiente →</button>
     </div>
 
-    <!-- INVERSE INPUT (choices) -->
+    <!-- INVERSE (choices) -->
     <div class="input-area hidden" id="inverseInput">
       <div class="choices-grid" id="choicesGrid"></div>
       <div class="feedback empty" id="feedbackInv"></div>
       <button class="next-btn hidden" id="nextBtnInv" onclick="nextKana()">Siguiente →</button>
     </div>
 
-  </div>
-
-  <!-- SESSION COMPLETE -->
-  <div class="complete-screen hidden" id="completeScreen">
-    <div class="complete-icon">🎉</div>
-    <div class="complete-title">Sesión completada</div>
-    <div id="newRecord" class="hidden record-badge">⭐ ¡Nuevo récord de precisión!</div>
-    <div class="complete-stats">
-      <div class="complete-stat"><span class="val" id="cAciertos">0</span>Aciertos</div>
-      <div class="complete-stat"><span class="val" id="cErrores">0</span>Errores</div>
-      <div class="complete-stat"><span class="val" id="cPrecision">—</span>Precisión</div>
+    <!-- KEYBOARD INPUT -->
+    <div class="input-area hidden" id="keyboardInput">
+      <div class="kb-selected-display" id="kbDisplay">—</div>
+      <div id="kbGrid"></div>
+      <div class="feedback empty" id="feedbackKb"></div>
+      <button class="next-btn hidden" id="nextBtnKb" onclick="nextKana()">Siguiente →</button>
     </div>
-    <div id="errorTableWrap" style="width:100%"></div>
-    <button class="check-btn" style="width:100%;margin-top:8px" onclick="restartSession()">Reiniciar sesión</button>
-  </div>
 
-  <!-- ACTION ROW -->
-  <div class="action-row">
-    <button class="action-btn" onclick="restartSession()">↺ Reiniciar sesión</button>
-    <button class="action-btn" onclick="clearHistory()">Borrar historial</button>
-  </div>
+    <!-- COMPLETE -->
+    <div class="hidden" id="completeScreen">
+      <div class="complete-screen-inner">
+        <div class="complete-icon">🎉</div>
+        <div class="complete-title">¡Sesión completada!</div>
+        <div id="newRecord" class="hidden record-badge">⭐ ¡Nuevo récord de precisión!</div>
+        <div class="complete-stats">
+          <div class="complete-stat"><span class="val" id="cAciertos">0</span>Aciertos</div>
+          <div class="complete-stat"><span class="val" id="cErrores">0</span>Errores</div>
+          <div class="complete-stat"><span class="val" id="cPrecision">—</span>Precisión</div>
+          <div class="complete-stat"><span class="val" id="cVel">—</span>Vel. media</div>
+          <div class="complete-stat"><span class="val" id="cStreak">—</span>Racha</div>
+        </div>
+        <div id="errorTableWrap" style="width:100%"></div>
+        <button class="check-btn" style="width:100%;margin-top:6px" onclick="restartSession()">Reiniciar sesión</button>
+      </div>
+    </div>
 
-</div>
+    <div class="action-row">
+      <button class="action-btn" onclick="restartSession()">↺ Reiniciar</button>
+      <button class="action-btn" onclick="clearHistory()">Borrar historial</button>
+    </div>
+
+  </div><!-- /screen-practice -->
+
+  <!-- ══════════════════════════════════════
+       PANTALLA: MUERTE SÚBITA
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-muerte">
+
+    <!-- CONFIG -->
+    <div id="msConfig">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:16px;font-weight:700;text-align:center">Muerte Súbita</div>
+        <div style="font-size:13px;color:var(--muted);text-align:center">3 vidas · responde lo más rápido posible · un error = una vida</div>
+
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:12px;color:var(--muted)">Modo de kana</div>
+          <div class="mode-bar">
+            <button class="mode-btn active" id="msModeHira" onclick="setMsMode('hiragana')">ひ Hiragana</button>
+            <button class="mode-btn" id="msModeKata" onclick="setMsMode('katakana')">カ Katakana</button>
+            <button class="mode-btn" id="msModeMixed" onclick="setMsMode('mixed')">混 Mixto</button>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:12px;color:var(--muted)">Tiempo límite por kana</div>
+          <div style="display:flex;gap:6px">
+            <button class="sub-btn active" id="msTime5"  onclick="setMsTime(5)">5 s</button>
+            <button class="sub-btn"        id="msTime8"  onclick="setMsTime(8)">8 s</button>
+            <button class="sub-btn"        id="msTime12" onclick="setMsTime(12)">12 s</button>
+          </div>
+        </div>
+
+        <button class="check-btn" style="width:100%;padding:14px;font-size:15px" onclick="startMuerte()">⚡ Comenzar</button>
+      </div>
+    </div>
+
+    <!-- JUEGO -->
+    <div id="msGame" class="hidden" style="display:none;flex-direction:column;gap:12px">
+
+      <div class="ms-status">
+        <div>
+          <div class="ms-score">Racha <span id="msRacha">0</span></div>
+          <div class="ms-score">Puntos <span id="msPuntos">0</span></div>
+        </div>
+        <div class="ms-timer" id="msTimer">—</div>
+        <div id="msLives" style="display:flex;gap:6px;font-size:22px">
+          <span class="life-icon">❤️</span>
+          <span class="life-icon">❤️</span>
+          <span class="life-icon">❤️</span>
+        </div>
+      </div>
+
+      <div class="kana-card" style="padding:24px 20px 20px">
+        <span class="kana-type-badge badge-hira" id="msKanaBadge">Hiragana</span>
+        <div class="kana-display" id="msKanaDisplay">—</div>
+      </div>
+
+      <div class="input-area">
+        <div class="input-row">
+          <input type="text" class="romaji-input" id="msInput"
+                 placeholder="romaji…"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <button class="check-btn" onclick="checkMs()">OK</button>
+        </div>
+        <div class="feedback empty" id="msFeedback"></div>
+      </div>
+
+    </div>
+
+    <!-- GAME OVER -->
+    <div id="msGameOver" class="hidden">
+      <div class="gameover-screen">
+        <div class="gameover-icon" id="msGoIcon">💀</div>
+        <div class="complete-title" id="msGoTitle">Game Over</div>
+        <div class="complete-stats">
+          <div class="complete-stat"><span class="val" id="msGoPuntos">0</span>Puntos</div>
+          <div class="complete-stat"><span class="val" id="msGoRacha">0</span>Racha máx.</div>
+          <div class="complete-stat"><span class="val" id="msGoAcc">—</span>Precisión</div>
+        </div>
+        <div id="msGoRecord" class="hidden record-badge">⭐ ¡Nuevo récord!</div>
+        <button class="check-btn" style="width:100%;margin-top:4px" onclick="resetMuerte()">Volver a intentar</button>
+        <button class="action-btn" style="width:100%" onclick="resetMuerteConfig()">Cambiar configuración</button>
+      </div>
+    </div>
+
+  </div><!-- /screen-muerte -->
+
+  <!-- ══════════════════════════════════════
+       PANTALLA: ESTADÍSTICAS
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-stats">
+
+    <div class="stats-summary" id="statsSummary"></div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Precisión por sesión (últimas 15)</div>
+      <div class="chart-bars" id="chartBars"></div>
+    </div>
+
+    <div class="kana-grid-wrap">
+      <div class="kana-grid-title">Kana más fallados (historial global)</div>
+      <div class="kana-grid" id="kanaGridFailed"></div>
+    </div>
+
+    <div class="kana-grid-wrap">
+      <div class="kana-grid-title">Tiempos de respuesta (promedio por kana)</div>
+      <div class="kana-grid" id="kanaGridTimes"></div>
+    </div>
+
+    <button class="action-btn" style="width:100%;color:var(--accent2);border-color:var(--accent)" onclick="clearHistory()">Borrar todo el historial</button>
+
+  </div><!-- /screen-stats -->
+
+</div><!-- /app -->
 
 <script>
 // ═══════════════════════════════════════════════════════
 //  KANA DATA
 // ═══════════════════════════════════════════════════════
-
-const HIRAGANA = [
-  // Basic 46
+const HIRAGANA=[
   {k:'あ',r:'a'},{k:'い',r:'i'},{k:'う',r:'u'},{k:'え',r:'e'},{k:'お',r:'o'},
   {k:'か',r:'ka'},{k:'き',r:'ki'},{k:'く',r:'ku'},{k:'け',r:'ke'},{k:'こ',r:'ko'},
   {k:'さ',r:'sa'},{k:'し',r:'shi'},{k:'す',r:'su'},{k:'せ',r:'se'},{k:'そ',r:'so'},
@@ -583,14 +433,11 @@ const HIRAGANA = [
   {k:'や',r:'ya'},{k:'ゆ',r:'yu'},{k:'よ',r:'yo'},
   {k:'ら',r:'ra'},{k:'り',r:'ri'},{k:'る',r:'ru'},{k:'れ',r:'re'},{k:'ろ',r:'ro'},
   {k:'わ',r:'wa'},{k:'を',r:'wo'},{k:'ん',r:'n'},
-  // Dakuon
   {k:'が',r:'ga'},{k:'ぎ',r:'gi'},{k:'ぐ',r:'gu'},{k:'げ',r:'ge'},{k:'ご',r:'go'},
   {k:'ざ',r:'za'},{k:'じ',r:'ji'},{k:'ず',r:'zu'},{k:'ぜ',r:'ze'},{k:'ぞ',r:'zo'},
   {k:'だ',r:'da'},{k:'ぢ',r:'di'},{k:'づ',r:'du'},{k:'で',r:'de'},{k:'ど',r:'do'},
   {k:'ば',r:'ba'},{k:'び',r:'bi'},{k:'ぶ',r:'bu'},{k:'べ',r:'be'},{k:'ぼ',r:'bo'},
-  // Handakuon
   {k:'ぱ',r:'pa'},{k:'ぴ',r:'pi'},{k:'ぷ',r:'pu'},{k:'ぺ',r:'pe'},{k:'ぽ',r:'po'},
-  // Combinations (yōon)
   {k:'きゃ',r:'kya'},{k:'きゅ',r:'kyu'},{k:'きょ',r:'kyo'},
   {k:'しゃ',r:'sha'},{k:'しゅ',r:'shu'},{k:'しょ',r:'sho'},
   {k:'ちゃ',r:'cha'},{k:'ちゅ',r:'chu'},{k:'ちょ',r:'cho'},
@@ -603,9 +450,7 @@ const HIRAGANA = [
   {k:'びゃ',r:'bya'},{k:'びゅ',r:'byu'},{k:'びょ',r:'byo'},
   {k:'ぴゃ',r:'pya'},{k:'ぴゅ',r:'pyu'},{k:'ぴょ',r:'pyo'},
 ];
-
-const KATAKANA = [
-  // Basic 46
+const KATAKANA=[
   {k:'ア',r:'a'},{k:'イ',r:'i'},{k:'ウ',r:'u'},{k:'エ',r:'e'},{k:'オ',r:'o'},
   {k:'カ',r:'ka'},{k:'キ',r:'ki'},{k:'ク',r:'ku'},{k:'ケ',r:'ke'},{k:'コ',r:'ko'},
   {k:'サ',r:'sa'},{k:'シ',r:'shi'},{k:'ス',r:'su'},{k:'セ',r:'se'},{k:'ソ',r:'so'},
@@ -616,14 +461,11 @@ const KATAKANA = [
   {k:'ヤ',r:'ya'},{k:'ユ',r:'yu'},{k:'ヨ',r:'yo'},
   {k:'ラ',r:'ra'},{k:'リ',r:'ri'},{k:'ル',r:'ru'},{k:'レ',r:'re'},{k:'ロ',r:'ro'},
   {k:'ワ',r:'wa'},{k:'ヲ',r:'wo'},{k:'ン',r:'n'},
-  // Dakuon
   {k:'ガ',r:'ga'},{k:'ギ',r:'gi'},{k:'グ',r:'gu'},{k:'ゲ',r:'ge'},{k:'ゴ',r:'go'},
   {k:'ザ',r:'za'},{k:'ジ',r:'ji'},{k:'ズ',r:'zu'},{k:'ゼ',r:'ze'},{k:'ゾ',r:'zo'},
   {k:'ダ',r:'da'},{k:'ヂ',r:'di'},{k:'ヅ',r:'du'},{k:'デ',r:'de'},{k:'ド',r:'do'},
   {k:'バ',r:'ba'},{k:'ビ',r:'bi'},{k:'ブ',r:'bu'},{k:'ベ',r:'be'},{k:'ボ',r:'bo'},
-  // Handakuon
   {k:'パ',r:'pa'},{k:'ピ',r:'pi'},{k:'プ',r:'pu'},{k:'ペ',r:'pe'},{k:'ポ',r:'po'},
-  // Combinations
   {k:'キャ',r:'kya'},{k:'キュ',r:'kyu'},{k:'キョ',r:'kyo'},
   {k:'シャ',r:'sha'},{k:'シュ',r:'shu'},{k:'ショ',r:'sho'},
   {k:'チャ',r:'cha'},{k:'チュ',r:'chu'},{k:'チョ',r:'cho'},
@@ -637,557 +479,767 @@ const KATAKANA = [
   {k:'ピャ',r:'pya'},{k:'ピュ',r:'pyu'},{k:'ピョ',r:'pyo'},
 ];
 
+// Teclado kana — hiragana básico para el modo keyboard
+const KB_ROWS_HIRA=[
+  ['あ','い','う','え','お'],
+  ['か','き','く','け','こ'],
+  ['さ','し','す','せ','そ'],
+  ['た','ち','つ','て','と'],
+  ['な','に','ぬ','ね','の'],
+  ['は','ひ','ふ','へ','ほ'],
+  ['ま','み','む','め','も'],
+  ['や','ゆ','よ','わ','を','ん'],
+  ['が','ぎ','ぐ','げ','ご'],
+  ['ざ','じ','ず','ぜ','ぞ'],
+  ['だ','で','ど','ば','び','ぶ','べ','ぼ'],
+  ['ぱ','ぴ','ぷ','ぺ','ぽ'],
+];
+const KB_ROWS_KATA=[
+  ['ア','イ','ウ','エ','オ'],
+  ['カ','キ','ク','ケ','コ'],
+  ['サ','シ','ス','セ','ソ'],
+  ['タ','チ','ツ','テ','ト'],
+  ['ナ','ニ','ヌ','ネ','ノ'],
+  ['ハ','ヒ','フ','ヘ','ホ'],
+  ['マ','ミ','ム','メ','モ'],
+  ['ヤ','ユ','ヨ','ワ','ヲ','ン'],
+  ['ガ','ギ','グ','ゲ','ゴ'],
+  ['ザ','ジ','ズ','ゼ','ゾ'],
+  ['ダ','デ','ド','バ','ビ','ブ','ベ','ボ'],
+  ['パ','ピ','プ','ペ','ポ'],
+];
+
 // ═══════════════════════════════════════════════════════
-//  STATE
+//  STATE — PRÁCTICA
 // ═══════════════════════════════════════════════════════
+let mode='hiragana', subMode='kana2romaji';
+let pool=[], currentItem=null, currentSubMode='kana2romaji', waitingNext=false;
+let totalAciertos=0, totalErrores=0, errorCounts={};
+let responseTimes={}, questionStartTime=0;
+let sessionTimes=[]; // ms per correct answer this session
+let kbSelected=null;
 
-let mode = 'hiragana';       // 'hiragana' | 'katakana' | 'mixed'
-let subMode = 'kana2romaji'; // 'kana2romaji' | 'romaji2kana' | 'gauntlet'
-let pool = [];               // active kana with mastery
-let currentIdx = -1;
-let currentItem = null;
-let currentSubMode = 'kana2romaji'; // for gauntlet (per-question)
-let waitingNext = false;
+// ═══════════════════════════════════════════════════════
+//  STATE — MUERTE SÚBITA
+// ═══════════════════════════════════════════════════════
+let msMode='hiragana', msTimeLimit=5;
+let msLives=3, msRacha=0, msPuntos=0, msMaxRacha=0;
+let msCurrentItem=null, msTimer=null, msTimeLeft=0;
+let msTotal=0, msCorrect=0;
+let msRunning=false;
 
-let totalAciertos = 0;
-let totalErrores = 0;
-let errorCounts = {}; // kana → count
+// ═══════════════════════════════════════════════════════
+//  PERSISTENCE
+// ═══════════════════════════════════════════════════════
+const LS_KEY='kanaTrainerPro_v3';
+const LS_SESSION='kanaTrainerPro_sess_v3';
 
-// ─── localStorage helpers ───
-const LS_KEY     = 'kanaTrainerPro_v2';   // historial global
-const LS_SESSION = 'kanaTrainerPro_sess'; // sesión en curso
-
-function loadPersist() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch { return {}; }
+function loadPersist(){try{return JSON.parse(localStorage.getItem(LS_KEY))||{};}catch{return {};}}
+function savePersist(d){try{localStorage.setItem(LS_KEY,JSON.stringify(d));}catch{}}
+function loadSession(){try{return JSON.parse(localStorage.getItem(LS_SESSION))||null;}catch{return null;}}
+function saveSession(){
+  try{
+    localStorage.setItem(LS_SESSION,JSON.stringify({
+      mode,subMode,totalAciertos,totalErrores,errorCounts,responseTimes,
+      currentKana:currentItem?currentItem.kana:null,
+      pool:pool.map(p=>({kana:p.kana,mastery:p.mastery})),
+      ts:Date.now()
+    }));
+  }catch{}
 }
-function savePersist(data) {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch {}
-}
+function clearSession(){try{localStorage.removeItem(LS_SESSION);}catch{}}
 
-// Guarda el estado completo de la sesión activa
-function saveSession() {
-  try {
-    const snap = {
-      mode,
-      subMode,
-      totalAciertos,
-      totalErrores,
-      errorCounts,
-      currentKana: currentItem ? currentItem.kana : null,
-      pool: pool.map(p => ({ kana: p.kana, mastery: p.mastery })),
-      ts: Date.now()
-    };
-    localStorage.setItem(LS_SESSION, JSON.stringify(snap));
-  } catch {}
-}
-
-// Elimina la sesión guardada (al completar o reiniciar)
-function clearSession() {
-  try { localStorage.removeItem(LS_SESSION); } catch {}
-}
-
-// Carga la sesión guardada si existe, devuelve null si no hay ninguna
-function loadSession() {
-  try { return JSON.parse(localStorage.getItem(LS_SESSION)) || null; } catch { return null; }
+// ═══════════════════════════════════════════════════════
+//  SCREEN NAV
+// ═══════════════════════════════════════════════════════
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>{
+    t.classList.toggle('active',['practice','muerte','stats'][i]===name);
+  });
+  document.getElementById('screen-'+name).classList.add('visible');
+  if(name==='stats') renderStatsScreen();
 }
 
 // ═══════════════════════════════════════════════════════
 //  BUILD POOL
 // ═══════════════════════════════════════════════════════
-
-function buildPool() {
-  let source = [];
-  if (mode === 'hiragana') source = HIRAGANA;
-  else if (mode === 'katakana') source = KATAKANA;
-  else source = [...HIRAGANA, ...KATAKANA];
-
-  pool = source.map(item => ({
-    kana: item.k,
-    romaji: item.r,
-    type: isHiragana(item.k) ? 'hira' : 'kata',
-    mastery: 0
+function sourceFor(m){
+  if(m==='hiragana') return HIRAGANA;
+  if(m==='katakana') return KATAKANA;
+  return [...HIRAGANA,...KATAKANA];
+}
+function buildPool(){
+  pool=sourceFor(mode).map(item=>({
+    kana:item.k,romaji:item.r,
+    type:isHiragana(item.k)?'hira':'kata',
+    mastery:0
   }));
-
-  errorCounts = {};
-  totalAciertos = 0;
-  totalErrores = 0;
+  errorCounts={};responseTimes={};
+  totalAciertos=0;totalErrores=0;sessionTimes=[];
 }
+function isHiragana(ch){const c=ch.codePointAt(0);return c>=0x3040&&c<=0x309F;}
 
-function isHiragana(ch) {
-  const c = ch.codePointAt(0);
-  return c >= 0x3040 && c <= 0x309F;
+// ═══════════════════════════════════════════════════════
+//  WEIGHTED SELECTION
+// ═══════════════════════════════════════════════════════
+function weightFor(m){return{'-2':16,'-1':8,'0':4,'1':2}[String(m)]||4;}
+function pickWeighted(){
+  const cands=pool.filter(p=>p.mastery<2);
+  if(!cands.length) return null;
+  const avail=cands.length>1?cands.filter(p=>p!==currentItem):cands;
+  const total=avail.reduce((s,p)=>s+weightFor(p.mastery),0);
+  let rand=Math.random()*total;
+  for(const item of avail){rand-=weightFor(item.mastery);if(rand<=0)return item;}
+  return avail[avail.length-1];
 }
 
 // ═══════════════════════════════════════════════════════
-//  WEIGHTED SELECTION  (exponential weights)
+//  RENDER STATS
 // ═══════════════════════════════════════════════════════
-
-function weightFor(mastery) {
-  // mastery: -2 → weight 16, -1 → 8, 0 → 4, 1 → 2
-  // mastery >= 2: excluded already
-  const weights = { '-2': 16, '-1': 8, '0': 4, '1': 2 };
-  return weights[String(mastery)] || 4;
+function renderStats(){
+  const dominated=pool.filter(p=>p.mastery>=2).length;
+  const total=pool.length;
+  document.getElementById('sAciertos').textContent=totalAciertos;
+  document.getElementById('sErrores').textContent=totalErrores;
+  const prec=totalAciertos+totalErrores>0?Math.round(totalAciertos/(totalAciertos+totalErrores)*100):null;
+  document.getElementById('sPrecision').textContent=prec!==null?prec+'%':'—';
+  document.getElementById('sRestantes').textContent=pool.filter(p=>p.mastery<2).length;
+  const avgMs=sessionTimes.length?Math.round(sessionTimes.reduce((a,b)=>a+b,0)/sessionTimes.length):null;
+  document.getElementById('sVelocidad').textContent=avgMs?avgMs/1000+'s':'—';
+  const pct=total>0?Math.round(dominated/total*100):0;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progLabel').textContent=dominated+' / '+total+' dominados';
 }
 
-function pickWeighted() {
-  const candidates = pool.filter(p => p.mastery < 2);
-  if (candidates.length === 0) return null;
-
-  // Avoid repeating the same kana twice in a row
-  const available = candidates.length > 1
-    ? candidates.filter(p => p !== currentItem)
-    : candidates;
-
-  const total = available.reduce((s, p) => s + weightFor(p.mastery), 0);
-  let rand = Math.random() * total;
-  for (const item of available) {
-    rand -= weightFor(item.mastery);
-    if (rand <= 0) return item;
-  }
-  return available[available.length - 1];
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER
-// ═══════════════════════════════════════════════════════
-
-function renderStats() {
-  const dominated = pool.filter(p => p.mastery >= 2).length;
-  const remaining = pool.filter(p => p.mastery < 2).length;
-  const total = pool.length;
-
-  document.getElementById('sAciertos').textContent = totalAciertos;
-  document.getElementById('sErrores').textContent = totalErrores;
-  const prec = totalAciertos + totalErrores > 0
-    ? Math.round((totalAciertos / (totalAciertos + totalErrores)) * 100)
-    : null;
-  document.getElementById('sPrecision').textContent = prec !== null ? prec + '%' : '—';
-  document.getElementById('sRestantes').textContent = remaining;
-
-  const pct = total > 0 ? Math.round((dominated / total) * 100) : 0;
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progLabel').textContent = dominated + ' / ' + total + ' dominados';
-}
-
-function renderPips(mastery) {
-  const wrap = document.getElementById('masteryPips');
-  wrap.innerHTML = '';
-  // Show -2..1 range as pips
-  // We show 4 pips: -2 -1 0 +1, filled = filled, red = negative
-  const levels = [-2, -1, 0, 1];
-  levels.forEach(level => {
-    const pip = document.createElement('div');
-    pip.className = 'pip' + (mastery > level ? ' filled' : '') + (level < 0 && mastery <= level ? ' neg' : '');
+function renderPips(mastery){
+  const wrap=document.getElementById('masteryPips');
+  wrap.innerHTML='';
+  [-2,-1,0,1].forEach(level=>{
+    const pip=document.createElement('div');
+    pip.className='pip'+(mastery>level?' filled':'')+(level<0&&mastery<=level?' neg':'');
     wrap.appendChild(pip);
   });
 }
 
-function showKana(item) {
-  currentItem = item;
-  const isModeGauntlet = subMode === 'gauntlet';
-  currentSubMode = isModeGauntlet
-    ? (Math.random() < 0.5 ? 'kana2romaji' : 'romaji2kana')
-    : subMode;
-
-  const badge = document.getElementById('kanaBadge');
-  badge.textContent = item.type === 'hira' ? 'Hiragana' : 'Katakana';
-  badge.className = 'kana-type-badge ' + (item.type === 'hira' ? 'badge-hira' : 'badge-kata');
-
-  renderPips(item.mastery);
-  document.getElementById('masteryLabel').textContent = 'Dominio: ' + Math.max(0, item.mastery) + ' / 2';
-
-  const normalInput = document.getElementById('normalInput');
-  const inverseInput = document.getElementById('inverseInput');
-  const romajiInput = document.getElementById('romajiInput');
-
-  if (currentSubMode === 'kana2romaji') {
-    document.getElementById('kanaDisplay').textContent = item.kana;
-    normalInput.classList.remove('hidden');
-    inverseInput.classList.add('hidden');
-    romajiInput.value = '';
-    romajiInput.className = 'romaji-input';
-    romajiInput.placeholder = 'escribe el romaji…';
-    setFeedback('', 'empty');
-    document.getElementById('nextBtn').classList.add('hidden');
-    setTimeout(() => romajiInput.focus(), 50);
-  } else {
-    // romaji2kana: show romaji, pick kana
-    document.getElementById('kanaDisplay').textContent = item.romaji;
-    normalInput.classList.add('hidden');
-    inverseInput.classList.remove('hidden');
-    buildChoices(item);
-    setFeedbackInv('', 'empty');
-    document.getElementById('nextBtnInv').classList.add('hidden');
+// ═══════════════════════════════════════════════════════
+//  TIMER PER QUESTION
+// ═══════════════════════════════════════════════════════
+function startQuestionTimer(){questionStartTime=Date.now();}
+function getElapsed(){return Date.now()-questionStartTime;}
+function updateTimerDisplay(){
+  if(!waitingNext&&questionStartTime){
+    const s=(getElapsed()/1000).toFixed(1);
+    document.getElementById('timerVal').textContent=s+'s';
   }
-
-  waitingNext = false;
+}
+let timerInterval=null;
+function startTimer(){
+  clearInterval(timerInterval);
+  document.getElementById('timerVal').textContent='—';
+  startQuestionTimer();
+  timerInterval=setInterval(updateTimerDisplay,100);
+}
+function stopTimer(){
+  clearInterval(timerInterval);
+  const elapsed=getElapsed();
+  document.getElementById('timerVal').textContent=(elapsed/1000).toFixed(1)+'s';
+  return elapsed;
 }
 
-function buildChoices(correctItem) {
-  const grid = document.getElementById('choicesGrid');
-  grid.innerHTML = '';
+// ═══════════════════════════════════════════════════════
+//  SHOW KANA
+// ═══════════════════════════════════════════════════════
+function showKana(item){
+  currentItem=item;
+  const isGauntlet=subMode==='gauntlet';
+  currentSubMode=isGauntlet?(Math.random()<.5?'kana2romaji':'romaji2kana'):subMode;
+  if(subMode==='keyboard') currentSubMode='keyboard';
 
-  // Build distractors: prioritize same romaji-shape (phonetically similar)
-  const allPool = pool.filter(p => p !== correctItem);
-  // Try to find phonetically related (same vowel or same consonant cluster)
-  const vowel = correctItem.romaji.slice(-1);
-  const related = allPool.filter(p => p.romaji.slice(-1) === vowel && p !== correctItem);
-  const unrelated = allPool.filter(p => !related.includes(p));
+  const badge=document.getElementById('kanaBadge');
+  badge.textContent=item.type==='hira'?'Hiragana':'Katakana';
+  badge.className='kana-type-badge '+(item.type==='hira'?'badge-hira':'badge-kata');
+  renderPips(item.mastery);
+  document.getElementById('masteryLabel').textContent='Dominio: '+Math.max(0,item.mastery)+' / 2';
 
-  // Shuffle and pick 3 distractors: prefer related
-  shuffle(related); shuffle(unrelated);
-  const distractors = [...related, ...unrelated].slice(0, 3);
+  const ni=document.getElementById('normalInput');
+  const ii=document.getElementById('inverseInput');
+  const ki=document.getElementById('keyboardInput');
+  ni.classList.add('hidden');ii.classList.add('hidden');ki.classList.add('hidden');
 
-  const choices = [correctItem, ...distractors];
-  shuffle(choices);
+  kbSelected=null;
+  waitingNext=false;
 
-  choices.forEach(item => {
-    const btn = document.createElement('button');
-    btn.className = 'choice-btn';
-    btn.textContent = item.kana;
-    btn.onclick = () => handleChoice(btn, item, correctItem);
-    grid.appendChild(btn);
+  if(currentSubMode==='kana2romaji'){
+    document.getElementById('kanaDisplay').textContent=item.kana;
+    ni.classList.remove('hidden');
+    const inp=document.getElementById('romajiInput');
+    inp.value='';inp.className='romaji-input';
+    setFeedback('feedback','empty','');
+    document.getElementById('nextBtn').classList.add('hidden');
+    setTimeout(()=>inp.focus(),50);
+  } else if(currentSubMode==='romaji2kana'){
+    document.getElementById('kanaDisplay').textContent=item.romaji;
+    ii.classList.remove('hidden');
+    buildChoices(item);
+    setFeedback('feedbackInv','empty','');
+    document.getElementById('nextBtnInv').classList.add('hidden');
+  } else {
+    // keyboard
+    document.getElementById('kanaDisplay').textContent=item.romaji;
+    ki.classList.remove('hidden');
+    document.getElementById('kbDisplay').textContent='—';
+    buildKbGrid(item);
+    setFeedback('feedbackKb','empty','');
+    document.getElementById('nextBtnKb').classList.add('hidden');
+    document.getElementById('nextBtnKb').disabled=false;
+  }
+
+  // pop animation
+  const disp=document.getElementById('kanaDisplay');
+  disp.classList.add('pop');
+  setTimeout(()=>disp.classList.remove('pop'),120);
+
+  startTimer();
+}
+
+// ═══════════════════════════════════════════════════════
+//  KEYBOARD GRID
+// ═══════════════════════════════════════════════════════
+function buildKbGrid(correctItem){
+  const grid=document.getElementById('kbGrid');
+  grid.innerHTML='';
+  const rows=isHiragana(correctItem.kana)?KB_ROWS_HIRA:KB_ROWS_KATA;
+  rows.forEach(row=>{
+    const rowEl=document.createElement('div');
+    rowEl.className='kb-row';
+    row.forEach(ch=>{
+      const btn=document.createElement('button');
+      btn.className='kb-key';
+      btn.textContent=ch;
+      btn.onclick=()=>{
+        if(waitingNext)return;
+        kbSelected=ch;
+        document.querySelectorAll('.kb-key').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        document.getElementById('kbDisplay').textContent=ch;
+        // auto-check
+        checkKb();
+      };
+      rowEl.appendChild(btn);
+    });
+    grid.appendChild(rowEl);
   });
 }
 
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
+function checkKb(){
+  if(waitingNext||!kbSelected)return;
+  const isCorrect=kbSelected===currentItem.kana;
+  applyResult(isCorrect,currentItem.kana,null,'kb');
 }
 
 // ═══════════════════════════════════════════════════════
-//  ANSWER HANDLING
+//  CHOICES (romaji→kana)
 // ═══════════════════════════════════════════════════════
+function buildChoices(correctItem){
+  const grid=document.getElementById('choicesGrid');
+  grid.innerHTML='';
+  const allPool=pool.filter(p=>p!==correctItem);
+  const vowel=correctItem.romaji.slice(-1);
+  const related=allPool.filter(p=>p.romaji.slice(-1)===vowel);
+  const unrelated=allPool.filter(p=>!related.includes(p));
+  shuffle(related);shuffle(unrelated);
+  const distractors=[...related,...unrelated].slice(0,3);
+  const choices=[correctItem,...distractors];
+  shuffle(choices);
+  choices.forEach(item=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.textContent=item.kana;
+    btn.onclick=()=>handleChoice(btn,item,correctItem);
+    grid.appendChild(btn);
+  });
+}
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}}
 
-function normalizeRomaji(r) {
-  return r.trim().toLowerCase()
-    .replace(/[ーｰ]/g, '')        // long vowel mark
-    .replace(/っ|ッ/g, 'x');       // sokuon placeholder
+// ═══════════════════════════════════════════════════════
+//  ANSWER HANDLING — PRÁCTICA
+// ═══════════════════════════════════════════════════════
+function getAcceptedForms(item){
+  const r=item.romaji,v=[r];
+  const alt={shi:['si'],chi:['ti'],tsu:['tu'],fu:['hu'],ji:['zi','dji'],di:['ji'],du:['zu'],
+    sha:['sya'],shu:['syu'],sho:['syo'],cha:['tya'],chu:['tyu'],cho:['tyo'],
+    ja:['jya','zya'],ju:['jyu','zyu'],jo:['jyo','zyo']};
+  if(alt[r]) v.push(...alt[r]);
+  return v;
+}
+function normalizeR(r){return r.trim().toLowerCase().replace(/[ーｰ]/g,'').replace(/っ|ッ/g,'x');}
+
+function checkAnswer(){
+  if(waitingNext){nextKana();return;}
+  const inp=document.getElementById('romajiInput');
+  const val=inp.value;if(!val.trim())return;
+  const accepted=getAcceptedForms(currentItem);
+  const isCorrect=accepted.some(a=>normalizeR(a)===normalizeR(val));
+  applyResult(isCorrect,currentItem.romaji,inp,null);
 }
 
-function checkAnswer() {
-  if (waitingNext) { nextKana(); return; }
-  const input = document.getElementById('romajiInput');
-  const val = input.value;
-  if (!val.trim()) return;
-
-  const correct = currentItem.romaji;
-  const userNorm = normalizeRomaji(val);
-  const correctNorm = normalizeRomaji(correct);
-
-  // Accept multiple valid romaji forms
-  const accepted = getAcceptedForms(currentItem);
-  const isCorrect = accepted.some(a => normalizeRomaji(a) === userNorm);
-
-  applyResult(isCorrect, correct, input, null);
+function handleChoice(btn,selected,correct){
+  if(waitingNext)return;
+  document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
+  const isCorrect=selected===correct;
+  btn.classList.add(isCorrect?'correct':'incorrect');
+  if(!isCorrect) document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===correct.kana)b.classList.add('correct');});
+  applyResult(isCorrect,correct.kana,null,'inv');
 }
 
-function getAcceptedForms(item) {
-  const r = item.romaji;
-  const variants = [r];
-  // Alternative spellings
-  const altMap = {
-    'shi': ['si'], 'chi': ['ti', 'tchi'], 'tsu': ['tu'],
-    'fu': ['hu'], 'ji': ['zi', 'dji'], 'di': ['ji'],
-    'du': ['zu'], 'sha': ['sya'], 'shu': ['syu'], 'sho': ['syo'],
-    'cha': ['tya'], 'chu': ['tyu'], 'cho': ['tyo'],
-    'ja': ['jya', 'zya'], 'ju': ['jyu', 'zyu'], 'jo': ['jyo', 'zyo'],
-  };
-  if (altMap[r]) variants.push(...altMap[r]);
-  return variants;
-}
+function applyResult(isCorrect,correctAnswer,inputEl,invType){
+  waitingNext=true;
+  const elapsed=stopTimer();
 
-function handleChoice(btn, selected, correct) {
-  if (waitingNext) return;
-  const isCorrect = selected === correct;
-
-  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
-
-  if (isCorrect) {
-    btn.classList.add('correct');
-  } else {
-    btn.classList.add('incorrect');
-    // Highlight correct answer
-    document.querySelectorAll('.choice-btn').forEach(b => {
-      if (b.textContent === correct.kana) b.classList.add('correct');
-    });
-  }
-
-  applyResult(isCorrect, correct.kana, null, true);
-}
-
-function applyResult(isCorrect, correctAnswer, inputEl, isInverse) {
-  waitingNext = true;
-
-  if (isCorrect) {
+  if(isCorrect){
     totalAciertos++;
-    currentItem.mastery = Math.min(2, currentItem.mastery + 1);
-    if (isInverse) {
-      setFeedbackInv('✔ Correcto', 'correct');
+    currentItem.mastery=Math.min(2,currentItem.mastery+1);
+    sessionTimes.push(elapsed);
+    if(!responseTimes[currentItem.kana]) responseTimes[currentItem.kana]=[];
+    responseTimes[currentItem.kana].push(elapsed);
+
+    if(invType==='inv'){
+      setFeedback('feedbackInv','correct','✔ Correcto');
       document.getElementById('nextBtnInv').classList.remove('hidden');
-      setTimeout(() => { if (waitingNext) nextKana(); }, 900);
+      setTimeout(()=>{if(waitingNext)nextKana();},900);
+    } else if(invType==='kb'){
+      setFeedback('feedbackKb','correct','✔ Correcto');
+      document.getElementById('nextBtnKb').classList.remove('hidden');
+      setTimeout(()=>{if(waitingNext)nextKana();},900);
     } else {
       inputEl.classList.add('correct');
-      setFeedback('✔ Correcto', 'correct');
+      setFeedback('feedback','correct','✔ Correcto');
       document.getElementById('nextBtn').classList.remove('hidden');
-      setTimeout(() => { if (waitingNext) nextKana(); }, 900);
+      setTimeout(()=>{if(waitingNext)nextKana();},900);
     }
   } else {
     totalErrores++;
-    currentItem.mastery = Math.max(-2, currentItem.mastery - 1);
-    errorCounts[currentItem.kana] = (errorCounts[currentItem.kana] || 0) + 1;
-    const msg = currentSubMode === 'kana2romaji'
-      ? '✖ Respuesta correcta: ' + correctAnswer
-      : '✖ La respuesta era: ' + correctAnswer;
-    if (isInverse) {
-      setFeedbackInv(msg, 'incorrect');
+    currentItem.mastery=Math.max(-2,currentItem.mastery-1);
+    errorCounts[currentItem.kana]=(errorCounts[currentItem.kana]||0)+1;
+    const msg=currentSubMode==='kana2romaji'?'✖ Correcto: '+correctAnswer:'✖ Era: '+correctAnswer;
+    if(invType==='inv'){
+      setFeedback('feedbackInv','incorrect',msg);
       document.getElementById('nextBtnInv').classList.remove('hidden');
+    } else if(invType==='kb'){
+      document.querySelectorAll('.kb-key').forEach(b=>{if(b.textContent===currentItem.kana)b.classList.add('selected');});
+      setFeedback('feedbackKb','incorrect',msg);
+      document.getElementById('nextBtnKb').classList.remove('hidden');
     } else {
       inputEl.classList.add('incorrect');
-      setFeedback(msg, 'incorrect');
+      setFeedback('feedback','incorrect',msg);
       document.getElementById('nextBtn').classList.remove('hidden');
     }
   }
 
   renderPips(currentItem.mastery);
-  document.getElementById('masteryLabel').textContent = 'Dominio: ' + Math.max(0, currentItem.mastery) + ' / 2';
+  document.getElementById('masteryLabel').textContent='Dominio: '+Math.max(0,currentItem.mastery)+' / 2';
   renderStats();
   updateHeaderRecords();
   saveSession();
 
-  // Check if session complete
-  const remaining = pool.filter(p => p.mastery < 2).length;
-  if (remaining === 0) {
-    setTimeout(() => showComplete(), 800);
-  }
+  if(pool.filter(p=>p.mastery<2).length===0) setTimeout(()=>showComplete(),800);
 }
 
-function setFeedback(msg, cls) {
-  const el = document.getElementById('feedback');
-  el.textContent = msg;
-  el.className = 'feedback ' + cls;
-}
-function setFeedbackInv(msg, cls) {
-  const el = document.getElementById('feedbackInv');
-  el.textContent = msg;
-  el.className = 'feedback ' + cls;
+function setFeedback(id,cls,msg){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.className='feedback '+cls;
 }
 
-function nextKana() {
-  const next = pickWeighted();
-  if (!next) { showComplete(); return; }
+function nextKana(){
+  const next=pickWeighted();
+  if(!next){showComplete();return;}
   showKana(next);
 }
 
 // ═══════════════════════════════════════════════════════
 //  SESSION COMPLETE
 // ═══════════════════════════════════════════════════════
-
-function showComplete() {
+function showComplete(){
   clearSession();
-  document.getElementById('practiceArea').classList.add('hidden');
+  document.getElementById('practiceArea') && null;
   document.getElementById('completeScreen').classList.remove('hidden');
-
-  const prec = totalAciertos + totalErrores > 0
-    ? Math.round((totalAciertos / (totalAciertos + totalErrores)) * 100)
-    : 0;
-
-  document.getElementById('cAciertos').textContent = totalAciertos;
-  document.getElementById('cErrores').textContent = totalErrores;
-  document.getElementById('cPrecision').textContent = prec + '%';
-
-  // Save to localStorage
-  const persist = loadPersist();
-  persist.sessions = (persist.sessions || 0) + 1;
-  const bestAcc = persist.bestAcc || 0;
-  let newRecord = false;
-  if (prec > bestAcc) { persist.bestAcc = prec; newRecord = true; }
-
-  // Merge error counts
-  if (!persist.errorCounts) persist.errorCounts = {};
-  Object.entries(errorCounts).forEach(([k, v]) => {
-    persist.errorCounts[k] = (persist.errorCounts[k] || 0) + v;
+  // hide inputs
+  ['normalInput','inverseInput','keyboardInput','kanaCard'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.classList.add('hidden');
   });
+
+  const prec=totalAciertos+totalErrores>0?Math.round(totalAciertos/(totalAciertos+totalErrores)*100):0;
+  const avgMs=sessionTimes.length?Math.round(sessionTimes.reduce((a,b)=>a+b,0)/sessionTimes.length):null;
+
+  document.getElementById('cAciertos').textContent=totalAciertos;
+  document.getElementById('cErrores').textContent=totalErrores;
+  document.getElementById('cPrecision').textContent=prec+'%';
+  document.getElementById('cVel').textContent=avgMs?(avgMs/1000).toFixed(1)+'s':'—';
+
+  const persist=loadPersist();
+  persist.sessions=(persist.sessions||0)+1;
+  persist.streak=checkStreak(persist);
+  document.getElementById('cStreak').textContent=persist.streak||1;
+
+  if(!persist.sessionHistory) persist.sessionHistory=[];
+  persist.sessionHistory.push({prec,ts:Date.now(),aciertos:totalAciertos,errores:totalErrores});
+  if(persist.sessionHistory.length>30) persist.sessionHistory=persist.sessionHistory.slice(-30);
+
+  const bestAcc=persist.bestAcc||0;
+  let newRecord=false;
+  if(prec>bestAcc){persist.bestAcc=prec;newRecord=true;}
+
+  if(!persist.errorCounts) persist.errorCounts={};
+  Object.entries(errorCounts).forEach(([k,v])=>{persist.errorCounts[k]=(persist.errorCounts[k]||0)+v;});
+
+  if(!persist.responseTimes) persist.responseTimes={};
+  Object.entries(responseTimes).forEach(([k,arr])=>{
+    if(!persist.responseTimes[k]) persist.responseTimes[k]=[];
+    persist.responseTimes[k].push(...arr);
+    if(persist.responseTimes[k].length>20) persist.responseTimes[k]=persist.responseTimes[k].slice(-20);
+  });
+
   savePersist(persist);
   updateHeaderRecords();
+  document.getElementById('newRecord').classList.toggle('hidden',!newRecord);
 
-  document.getElementById('newRecord').classList.toggle('hidden', !newRecord);
+  const entries=Object.entries(errorCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const wrap=document.getElementById('errorTableWrap');
+  if(!entries.length){wrap.innerHTML='<p style="color:var(--muted);font-size:12px;text-align:center;margin-top:8px">¡Sin errores! 🎯</p>';return;}
+  const maxErr=entries[0][1];
+  let html='<table class="error-table"><thead><tr><th>Kana</th><th>Romaji</th><th>Errores</th><th style="width:70px"></th></tr></thead><tbody>';
+  entries.forEach(([kana,count])=>{
+    const romaji=[...HIRAGANA,...KATAKANA].find(x=>x.k===kana)?.r||'?';
+    const pct=Math.round(count/maxErr*100);
+    html+=`<tr><td class="kana-cell">${kana}</td><td>${romaji}</td><td style="color:var(--accent2)">${count}</td><td><div class="error-bar"><div class="error-bar-fill" style="width:${pct}%"></div></div></td></tr>`;
+  });
+  html+='</tbody></table>';
+  wrap.innerHTML=html;
+}
 
-  // Error table
-  const entries = Object.entries(errorCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
-  const wrap = document.getElementById('errorTableWrap');
-  if (entries.length === 0) {
-    wrap.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center">¡Sin errores en esta sesión! 🎯</p>';
-    return;
+// ═══════════════════════════════════════════════════════
+//  STREAK
+// ═══════════════════════════════════════════════════════
+function checkStreak(persist){
+  const today=new Date().toDateString();
+  const last=persist.lastPracticeDay;
+  const yesterday=new Date(Date.now()-86400000).toDateString();
+  if(last===today) return persist.streak||1;
+  if(last===yesterday) return (persist.streak||0)+1;
+  return 1;
+}
+function updateHeaderRecords(){
+  const p=loadPersist();
+  const streak=p.streak||0;
+  document.getElementById('streakNum').textContent=streak;
+  document.getElementById('hBestAcc').textContent=p.bestAcc!=null?p.bestAcc+'%':'—';
+  document.getElementById('hSessions').textContent=p.sessions||0;
+
+  // Save today as last practice day
+  p.lastPracticeDay=new Date().toDateString();
+  if(!p.streak) p.streak=1;
+  savePersist(p);
+}
+
+// ═══════════════════════════════════════════════════════
+//  STATS SCREEN
+// ═══════════════════════════════════════════════════════
+function renderStatsScreen(){
+  const p=loadPersist();
+
+  // Summary cards
+  const bestMs=p.bestMs||null;
+  const bestMuerte=p.bestMuerte||0;
+  document.getElementById('statsSummary').innerHTML=`
+    <div class="summary-card"><div class="sv">${p.sessions||0}</div><div class="sl">Sesiones totales</div></div>
+    <div class="summary-card"><div class="sv">${p.bestAcc!=null?p.bestAcc+'%':'—'}</div><div class="sl">Mejor precisión</div></div>
+    <div class="summary-card"><div class="sv">${p.streak||0}</div><div class="sl">Racha actual 🔥</div></div>
+    <div class="summary-card"><div class="sv">${bestMuerte||'—'}</div><div class="sl">Récord Muerte Súbita</div></div>
+  `;
+
+  // Chart
+  const history=(p.sessionHistory||[]).slice(-15);
+  const chartEl=document.getElementById('chartBars');
+  if(!history.length){chartEl.innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center;width:100%">Sin sesiones todavía</div>';return;}
+  const maxPrec=Math.max(...history.map(h=>h.prec),1);
+  chartEl.innerHTML=history.map((h,i)=>{
+    const ht=Math.round(h.prec/maxPrec*88);
+    const d=new Date(h.ts);
+    const lbl=`${d.getDate()}/${d.getMonth()+1}`;
+    return `<div class="chart-bar-wrap">
+      <div class="chart-bar-val">${h.prec}%</div>
+      <div class="chart-bar" style="height:${ht}px;background:${h.prec>=80?'var(--green)':h.prec>=50?'var(--gold)':'var(--accent)'}"></div>
+      <div class="chart-bar-lbl">${lbl}</div>
+    </div>`;
+  }).join('');
+
+  // Failed kana grid
+  const ec=p.errorCounts||{};
+  const sorted=Object.entries(ec).sort((a,b)=>b[1]-a[1]).slice(0,30);
+  const failEl=document.getElementById('kanaGridFailed');
+  if(!sorted.length){failEl.innerHTML='<div style="color:var(--muted);font-size:12px">Sin datos aún</div>';}
+  else{
+    failEl.innerHTML=sorted.map(([kana,count])=>`
+      <div class="kana-chip">
+        <div class="kc-kana">${kana}</div>
+        <div class="kc-err">${count}✖</div>
+      </div>`).join('');
   }
-  const maxErr = entries[0][1];
-  let html = '<table class="error-table"><thead><tr><th>Kana</th><th>Romaji</th><th>Errores</th><th style="width:80px"></th></tr></thead><tbody>';
-  entries.forEach(([kana, count]) => {
-    const romaji = [...HIRAGANA, ...KATAKANA].find(x => x.k === kana)?.r || '?';
-    const pct = Math.round((count / maxErr) * 100);
-    html += `<tr>
-      <td class="kana-cell">${kana}</td>
-      <td>${romaji}</td>
-      <td style="color:var(--accent2)">${count}</td>
-      <td><div class="error-bar"><div class="error-bar-fill" style="width:${pct}%"></div></div></td>
-    </tr>`;
+
+  // Response times grid
+  const rt=p.responseTimes||{};
+  const rtSorted=Object.entries(rt)
+    .map(([kana,times])=>({kana,avg:Math.round(times.reduce((a,b)=>a+b,0)/times.length)}))
+    .sort((a,b)=>b.avg-a.avg).slice(0,20);
+  const timesEl=document.getElementById('kanaGridTimes');
+  if(!rtSorted.length){timesEl.innerHTML='<div style="color:var(--muted);font-size:12px">Sin datos aún</div>';}
+  else{
+    timesEl.innerHTML=rtSorted.map(({kana,avg})=>`
+      <div class="kana-chip">
+        <div class="kc-kana">${kana}</div>
+        <div class="kc-err">${(avg/1000).toFixed(1)}s</div>
+      </div>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  MUERTE SÚBITA
+// ═══════════════════════════════════════════════════════
+function setMsMode(m){
+  msMode=m;
+  ['Hira','Kata','Mixed'].forEach((n,i)=>{
+    document.getElementById('msMode'+n).classList.toggle('active',['hiragana','katakana','mixed'][i]===m);
   });
-  html += '</tbody></table>';
-  wrap.innerHTML = html;
+}
+function setMsTime(t){
+  msTimeLimit=t;
+  [5,8,12].forEach(v=>{document.getElementById('msTime'+v).classList.toggle('active',v===t);});
+}
+
+function startMuerte(){
+  msLives=3;msRacha=0;msPuntos=0;msMaxRacha=0;
+  msTotal=0;msCorrect=0;msRunning=true;
+  document.getElementById('msConfig').classList.add('hidden');
+  document.getElementById('msGameOver').classList.add('hidden');
+  const game=document.getElementById('msGame');
+  game.classList.remove('hidden');game.style.display='flex';
+  renderMsLives();
+  nextMs();
+}
+
+function nextMs(){
+  if(!msRunning)return;
+  const src=sourceFor(msMode);
+  msCurrentItem=src[Math.floor(Math.random()*src.length)];
+  msTotal++;
+
+  const badge=document.getElementById('msKanaBadge');
+  badge.textContent=isHiragana(msCurrentItem.kana)?'Hiragana':'Katakana';
+  badge.className='kana-type-badge '+(isHiragana(msCurrentItem.kana)?'badge-hira':'badge-kata');
+  document.getElementById('msKanaDisplay').textContent=msCurrentItem.kana;
+
+  const inp=document.getElementById('msInput');
+  inp.value='';inp.className='romaji-input';
+  setFeedback('msFeedback','empty','');
+  setTimeout(()=>inp.focus(),50);
+
+  msTimeLeft=msTimeLimit;
+  renderMsTimer();
+  clearInterval(msTimer);
+  msTimer=setInterval(()=>{
+    msTimeLeft-=0.1;
+    renderMsTimer();
+    if(msTimeLeft<=0){clearInterval(msTimer);msTimeExpired();}
+  },100);
+}
+
+function renderMsTimer(){
+  const el=document.getElementById('msTimer');
+  el.textContent=Math.max(0,msTimeLeft).toFixed(1)+'s';
+  el.className='ms-timer'+(msTimeLeft<=2?' danger':'');
+}
+
+function renderMsLives(){
+  const icons=document.querySelectorAll('#msLives .life-icon');
+  icons.forEach((ic,i)=>ic.classList.toggle('lost',i>=msLives));
+  document.getElementById('msRacha').textContent=msRacha;
+  document.getElementById('msPuntos').textContent=msPuntos;
+}
+
+function checkMs(){
+  if(!msRunning||!msCurrentItem)return;
+  clearInterval(msTimer);
+  const inp=document.getElementById('msInput');
+  const val=inp.value.trim();
+  if(!val)return;
+  const accepted=getAcceptedForms(msCurrentItem);
+  const isCorrect=accepted.some(a=>normalizeR(a)===normalizeR(val));
+  handleMsResult(isCorrect);
+}
+
+function msTimeExpired(){
+  if(!msRunning)return;
+  handleMsResult(false,true);
+}
+
+function handleMsResult(isCorrect,expired=false){
+  if(!msRunning)return;
+  if(isCorrect){
+    msCorrect++;
+    msRacha++;
+    if(msRacha>msMaxRacha)msMaxRacha=msRacha;
+    const bonus=Math.max(1,Math.round(msTimeLeft));
+    msPuntos+=10+bonus;
+    setFeedback('msFeedback','correct','✔ Correcto +'+( 10+bonus));
+    renderMsLives();
+    setTimeout(()=>nextMs(),600);
+  } else {
+    msLives--;
+    msRacha=0;
+    const msg=expired?'⏰ Tiempo! Era: '+msCurrentItem.romaji:'✖ Era: '+msCurrentItem.romaji;
+    setFeedback('msFeedback','incorrect',msg);
+    renderMsLives();
+    if(msLives<=0){setTimeout(()=>endMuerte(),800);}
+    else{setTimeout(()=>nextMs(),900);}
+  }
+}
+
+function endMuerte(){
+  msRunning=false;
+  clearInterval(msTimer);
+  document.getElementById('msGame').style.display='none';
+  document.getElementById('msGame').classList.add('hidden');
+  document.getElementById('msGameOver').classList.remove('hidden');
+
+  const prec=msTotal>0?Math.round(msCorrect/msTotal*100):0;
+  document.getElementById('msGoPuntos').textContent=msPuntos;
+  document.getElementById('msGoRacha').textContent=msMaxRacha;
+  document.getElementById('msGoAcc').textContent=prec+'%';
+
+  const icon=msPuntos>=100?'🏆':msPuntos>=50?'⚔️':'💀';
+  document.getElementById('msGoIcon').textContent=icon;
+  document.getElementById('msGoTitle').textContent=msPuntos>=100?'¡Excelente!':msPuntos>=50?'¡Bien hecho!':'Game Over';
+
+  const persist=loadPersist();
+  const prev=persist.bestMuerte||0;
+  const newRec=msPuntos>prev;
+  if(newRec) persist.bestMuerte=msPuntos;
+  persist.sessions=(persist.sessions||0);
+  savePersist(persist);
+  document.getElementById('msGoRecord').classList.toggle('hidden',!newRec);
+  updateHeaderRecords();
+}
+
+function resetMuerte(){
+  document.getElementById('msGameOver').classList.add('hidden');
+  startMuerte();
+}
+function resetMuerteConfig(){
+  document.getElementById('msGameOver').classList.add('hidden');
+  document.getElementById('msConfig').classList.remove('hidden');
 }
 
 // ═══════════════════════════════════════════════════════
-//  HEADER RECORDS
+//  CONTROLS — PRÁCTICA
 // ═══════════════════════════════════════════════════════
-
-function updateHeaderRecords() {
-  const p = loadPersist();
-  document.getElementById('hSessions').textContent = p.sessions || 0;
-  document.getElementById('hBestAcc').textContent = p.bestAcc != null ? p.bestAcc + '%' : '—';
-
-  // Most failed
-  const ec = p.errorCounts || {};
-  const sorted = Object.entries(ec).sort((a, b) => b[1] - a[1]);
-  document.getElementById('hMostFailed').textContent = sorted.length > 0 ? sorted[0][0] : '—';
-}
-
-// ═══════════════════════════════════════════════════════
-//  CONTROLS
-// ═══════════════════════════════════════════════════════
-
-function setMode(m) {
-  mode = m;
-  document.querySelectorAll('.mode-btn').forEach((btn, i) => {
-    btn.classList.toggle('active', ['hiragana','katakana','mixed'][i] === m);
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach((btn,i)=>{
+    btn.classList.toggle('active',['hiragana','katakana','mixed'][i]===m);
   });
   restartSession();
 }
-
-function setSubMode(sm) {
-  subMode = sm;
-  document.getElementById('smNormal').classList.toggle('active', sm === 'kana2romaji');
-  document.getElementById('smInverse').classList.toggle('active', sm === 'romaji2kana');
-  document.getElementById('smGauntlet').classList.toggle('active', sm === 'gauntlet');
+function setSubMode(sm){
+  subMode=sm;
+  document.getElementById('smNormal').classList.toggle('active',sm==='kana2romaji');
+  document.getElementById('smInverse').classList.toggle('active',sm==='romaji2kana');
+  document.getElementById('smKeyboard').classList.toggle('active',sm==='keyboard');
+  document.getElementById('smGauntlet').classList.toggle('active',sm==='gauntlet');
   restartSession();
 }
-
-function restartSession() {
-  clearSession();
+function restartSession(){
+  clearSession();clearInterval(timerInterval);
   buildPool();
-  document.getElementById('practiceArea').classList.remove('hidden');
   document.getElementById('completeScreen').classList.add('hidden');
+  ['normalInput','inverseInput','keyboardInput','kanaCard'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.classList.remove('hidden');
+  });
   renderStats();
-  const first = pickWeighted();
-  if (first) showKana(first);
+  const first=pickWeighted();
+  if(first)showKana(first);
 }
-
-function clearHistory() {
-  if (confirm('¿Borrar todo el historial guardado (sesiones, récords, errores)?')) {
+function clearHistory(){
+  if(confirm('¿Borrar todo el historial? (sesiones, récords, gráficos, errores)')){
     localStorage.removeItem(LS_KEY);
     updateHeaderRecords();
+    renderStatsScreen();
   }
 }
 
 // ═══════════════════════════════════════════════════════
-//  KEYBOARD
+//  KEYBOARD SHORTCUTS
 // ═══════════════════════════════════════════════════════
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    if (!document.getElementById('normalInput').classList.contains('hidden')) {
-      if (waitingNext) { nextKana(); }
-      else { checkAnswer(); }
-    } else if (!document.getElementById('inverseInput').classList.contains('hidden')) {
-      if (waitingNext) { nextKana(); }
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const ni=document.getElementById('normalInput');
+    const ii=document.getElementById('inverseInput');
+    if(!ni.classList.contains('hidden')){if(waitingNext)nextKana();else checkAnswer();}
+    else if(!ii.classList.contains('hidden')&&waitingNext)nextKana();
+    // Muerte súbita
+    if(document.getElementById('screen-muerte').classList.contains('visible')&&msRunning){
+      checkMs();
     }
   }
 });
+document.getElementById('msInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkMs();});
 
 // ═══════════════════════════════════════════════════════
-//  INIT — detectar sesión guardada
+//  INIT
 // ═══════════════════════════════════════════════════════
-
-function resumeSession(snap) {
-  // Restaurar modo
-  mode    = snap.mode    || 'hiragana';
-  subMode = snap.subMode || 'kana2romaji';
-
-  // Sincronizar botones de modo
-  document.querySelectorAll('.mode-btn').forEach((btn, i) => {
-    btn.classList.toggle('active', ['hiragana','katakana','mixed'][i] === mode);
+function resumeSession(snap){
+  mode=snap.mode||'hiragana';
+  subMode=snap.subMode||'kana2romaji';
+  document.querySelectorAll('.mode-btn').forEach((btn,i)=>{
+    btn.classList.toggle('active',['hiragana','katakana','mixed'][i]===mode);
   });
-  document.getElementById('smNormal').classList.toggle('active',   subMode === 'kana2romaji');
-  document.getElementById('smInverse').classList.toggle('active',  subMode === 'romaji2kana');
-  document.getElementById('smGauntlet').classList.toggle('active', subMode === 'gauntlet');
-
-  // Restaurar estadísticas
-  totalAciertos = snap.totalAciertos || 0;
-  totalErrores  = snap.totalErrores  || 0;
-  errorCounts   = snap.errorCounts   || {};
-
-  // Reconstruir pool completo con mastery guardado
-  let source = [];
-  if (mode === 'hiragana')      source = HIRAGANA;
-  else if (mode === 'katakana') source = KATAKANA;
-  else                          source = [...HIRAGANA, ...KATAKANA];
-
-  const masteryMap = {};
-  (snap.pool || []).forEach(p => { masteryMap[p.kana] = p.mastery; });
-
-  pool = source.map(item => ({
-    kana:    item.k,
-    romaji:  item.r,
-    type:    isHiragana(item.k) ? 'hira' : 'kata',
-    mastery: masteryMap[item.k] !== undefined ? masteryMap[item.k] : 0
+  ['smNormal','smInverse','smKeyboard','smGauntlet'].forEach((id,i)=>{
+    document.getElementById(id).classList.toggle('active',['kana2romaji','romaji2kana','keyboard','gauntlet'][i]===subMode);
+  });
+  totalAciertos=snap.totalAciertos||0;
+  totalErrores=snap.totalErrores||0;
+  errorCounts=snap.errorCounts||{};
+  responseTimes=snap.responseTimes||{};
+  const masteryMap={};
+  (snap.pool||[]).forEach(p=>{masteryMap[p.kana]=p.mastery;});
+  pool=sourceFor(mode).map(item=>({
+    kana:item.k,romaji:item.r,
+    type:isHiragana(item.k)?'hira':'kata',
+    mastery:masteryMap[item.k]!==undefined?masteryMap[item.k]:0
   }));
-
-  document.getElementById('practiceArea').classList.remove('hidden');
   document.getElementById('completeScreen').classList.add('hidden');
   renderStats();
-
-  // Retomar desde el kana donde estaba, o elegir el siguiente ponderado
-  const lastItem = snap.currentKana ? pool.find(p => p.kana === snap.currentKana) : null;
-  const next = lastItem && lastItem.mastery < 2 ? lastItem : pickWeighted();
-  if (next) showKana(next);
+  const lastItem=snap.currentKana?pool.find(p=>p.kana===snap.currentKana):null;
+  const next=lastItem&&lastItem.mastery<2?lastItem:pickWeighted();
+  if(next)showKana(next);
 }
 
 updateHeaderRecords();
 
-const savedSession = loadSession();
-if (savedSession && savedSession.pool && savedSession.pool.length > 0) {
-  // Calcular cuántos kana ya estaban dominados para informar al usuario
-  const dominated = savedSession.pool.filter(p => p.mastery >= 2).length;
-  const total     = savedSession.pool.length;
-  const pct       = Math.round((dominated / total) * 100);
-  const modeLabel = { hiragana: 'Hiragana', katakana: 'Katakana', mixed: 'Mixto' }[savedSession.mode] || savedSession.mode;
+const savedSession=loadSession();
+if(savedSession&&savedSession.pool&&savedSession.pool.length>0){
+  const dominated=savedSession.pool.filter(p=>p.mastery>=2).length;
+  const total=savedSession.pool.length;
+  const pct=Math.round(dominated/total*100);
+  const modeLabel={hiragana:'Hiragana',katakana:'Katakana',mixed:'Mixto'}[savedSession.mode]||savedSession.mode;
+  const mins=Math.round((Date.now()-(savedSession.ts||Date.now()))/60000);
+  const timeStr=mins<=1?'hace un momento':mins<60?'hace '+mins+' min':'hace '+Math.round(mins/60)+' h';
+  const msg=`Sesión de ${modeLabel} en progreso:\n• ${pct}% completado (${dominated}/${total} dominados)\n• ${savedSession.totalAciertos} aciertos, ${savedSession.totalErrores} errores\n• Guardada ${timeStr}\n\n¿Continuar?`;
+  if(confirm(msg)){resumeSession(savedSession);}
+  else{clearSession();restartSession();}
+}else{restartSession();}
 
-  // Calcular tiempo transcurrido
-  const mins = Math.round((Date.now() - (savedSession.ts || Date.now())) / 60000);
-  const timeStr = mins < 60
-    ? (mins <= 1 ? 'hace un momento' : 'hace ' + mins + ' min')
-    : 'hace ' + Math.round(mins / 60) + ' h';
-
-  const msg = `Tienes una sesión de ${modeLabel} en progreso:\n• ${pct}% completado (${dominated}/${total} dominados)\n• ${savedSession.totalAciertos} aciertos, ${savedSession.totalErrores} errores\n• Guardada ${timeStr}\n\n¿Deseas continuar donde lo dejaste?`;
-
-  if (confirm(msg)) {
-    resumeSession(savedSession);
-  } else {
-    clearSession();
-    restartSession();
-  }
-} else {
-  restartSession();
-}
-
-// ═══════════════════════════════════════════════════════
-//  SERVICE WORKER REGISTRATION
-// ═══════════════════════════════════════════════════════
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
-
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
