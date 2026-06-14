@@ -1,4 +1,4 @@
-const CACHE = 'kana-trainer-v1';
+const CACHE = 'kana-trainer-v3';
 const ASSETS = [
   './index.html',
   './manifest.json'
